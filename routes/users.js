@@ -1,5 +1,7 @@
 const express = require("express");
 const router = express.Router();
+const bcrypt = require("bcryptjs");
+const gravatar = require("gravatar");
 
 const userModel = require("../model/user");
 
@@ -11,26 +13,40 @@ router.post("/register", (req, res) => {
 
     const { name, email, password } = req.body;
 
-    const user = new userModel({
-        name,
-        email,
-        password
-    });
-
-    user
-        .save()
-        .then(user => {
-            res.json({
-                message : "successful save user",
-                userInfo : user
+    bcrypt.hash(password, 10, (err, hash) => {
+        if(err){
+            return res.json({
+                error: err
             });
-        })
-        .catch(err => {
-            res.json({
-                error: err.message
+        } else {
+           const avatar = gravatar.url(email, {
+                s: '200',
+                r: 'pg',
+                d: 'mm'
             });
-        });
 
+            const user = new userModel({
+                name,
+                email,
+                avatar,
+                password : hash
+            });
+
+            user
+                .save()
+                .then(user => {
+                    res.json({
+                        message : "successful save user",
+                        userInfo : user
+                    });
+                })
+                .catch(err => {
+                    res.json({
+                        error: err.message
+                    });
+                });
+        }
+    })
 });
 
 
