@@ -1,6 +1,7 @@
 const express = require("express");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
+const passport = require("passport");
 const dotEnv = require("dotenv");
 dotEnv.config();
 
@@ -20,7 +21,9 @@ require("./config/database");
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-
+app.use(passport.initialize());
+// passport config
+require('./config/passport')(passport);
 
 app.use("/profile", profileRoute);
 app.use("/users", usersRouter);
