@@ -13,40 +13,55 @@ router.post("/register", (req, res) => {
 
     const { name, email, password } = req.body;
 
-    bcrypt.hash(password, 10, (err, hash) => {
-        if(err){
-            return res.json({
-                error: err
-            });
-        } else {
-           const avatar = gravatar.url(email, {
-                s: '200',
-                r: 'pg',
-                d: 'mm'
-            });
-
-            const user = new userModel({
-                name,
-                email,
-                avatar,
-                password : hash
-            });
-
-            user
-                .save()
-                .then(user => {
-                    res.json({
-                        message : "successful save user",
-                        userInfo : user
-                    });
-                })
-                .catch(err => {
-                    res.json({
-                        error: err.message
-                    });
+    userModel
+        .findOne({ email })
+        .then(user => {
+            if(user) {
+                return res.json({
+                   message : "email already used"
                 });
-        }
-    })
+            } else {
+                bcrypt.hash(password, 10, (err, hash) => {
+                    if(err){
+                        return res.json({
+                            error: err
+                        });
+                    } else {
+                       const avatar = gravatar.url(email, {
+                            s: '200',
+                            r: 'pg',
+                            d: 'mm'
+                        });
+
+                        const user = new userModel({
+                            name,
+                            email,
+                            avatar,
+                            password : hash
+                        });
+
+                        user
+                            .save()
+                            .then(user => {
+                                res.json({
+                                    message : "successful save user",
+                                    userInfo : user
+                                });
+                            })
+                            .catch(err => {
+                                res.json({
+                                    error: err.message
+                                });
+                            });
+                    }
+                });
+            }
+        })
+        .catch(err => {
+            res.json({
+                error : err.message
+            });
+        });
 });
 
 
