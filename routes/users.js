@@ -21,40 +21,30 @@ router.post("/register", (req, res) => {
                    message : "email already used"
                 });
             } else {
-                bcrypt.hash(password, 10, (err, hash) => {
-                    if(err){
-                        return res.json({
-                            error: err
-                        });
-                    } else {
-                       const avatar = gravatar.url(email, {
-                            s: '200',
-                            r: 'pg',
-                            d: 'mm'
-                        });
-
-                        const user = new userModel({
-                            name,
-                            email,
-                            avatar,
-                            password : hash
-                        });
-
-                        user
-                            .save()
-                            .then(user => {
-                                res.json({
-                                    message : "successful save user",
-                                    userInfo : user
-                                });
-                            })
-                            .catch(err => {
-                                res.json({
-                                    error: err.message
-                                });
-                            });
-                    }
+                const avatar = gravatar.url(email, {
+                    s: '200',
+                    r: 'pg',
+                    d: 'mm'
                 });
+
+                const newUser = new userModel({
+                    name,
+                    email,
+                    avatar,
+                    password
+                });
+
+                bcrypt.genSalt(10, (err, salt) => {
+                    bcrypt.hash(newUser.password, salt, (err, hash) => {
+                        if(err) throw err;
+                        newUser.password = hash;
+
+                        newUser
+                            .save()
+                            .then(user => res.json(user))
+                            .catch(err => res.json(err));
+                    })
+                })
             }
         })
         .catch(err => {
