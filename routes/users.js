@@ -2,9 +2,10 @@ const express = require("express");
 const router = express.Router();
 
 const jwt = require("jsonwebtoken");
-
+const passport = require("passport");
 const userModel = require("../model/user");
 
+const checkAuth = passport.authenticate('jwt', { session: false});
 
 function tokenGenerator(payload) {
     return jwt.sign(
@@ -13,10 +14,6 @@ function tokenGenerator(payload) {
         {expiresIn: 36000 }
     );
 }
-
-
-
-
 
 
 // @route   POST http://localhost:5000/users/register
@@ -105,8 +102,12 @@ router.post("/login", (req, res) => {
 // @route  GET /users/current
 // @desc   Return current user
 // @access private
-router.get('/current', (req, res) => {
-
+router.get('/current', checkAuth , (req, res) => {
+    res.json({
+        id: req.user.id,
+        name: req.user.name,
+        avatar: req.user.avatar
+    });
 });
 
 
