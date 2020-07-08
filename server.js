@@ -6,6 +6,11 @@ dotEnv.config();
 
 const app = express();
 
+const profileRoute = require("./routes/profile");
+const usersRouter = require("./routes/users");
+
+
+
 
 //Database 연결
 require("./config/database");
@@ -17,7 +22,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 
-
+app.use("/profile", profileRoute);
+app.use("/users", usersRouter);
 
 
 const PORT = process.env.PORT || 7000;
