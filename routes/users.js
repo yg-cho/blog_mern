@@ -8,7 +8,7 @@ const userModel = require("../model/user");
 const checkAuth = passport.authenticate('jwt', { session: false});
 
 const validateRegisterInput = require('../validation/register');
-
+const validateLoginInput = require('../validation/login');
 function tokenGenerator(payload) {
     return jwt.sign(
         payload,
@@ -71,20 +71,34 @@ router.post("/register", (req, res) => {
 // @desc    Logged User
 // @access  Public
 router.post("/login", (req, res) => {
+
+    const {errors, isValid} = validateLoginInput(req.body);
     const {email, password} = req.body;
+
+    // checkValidation
+    if(!isValid){
+        return res.status(400).json(errors);
+    }
+
     userModel
         .findOne({ email })
         .then(user => {
             if(!user) {
-                return res.json({
-                    message: "email not found"
-                });
+
+                errors.email = "email not found";
+                return res.status(404).json(errors);
+
+                // return res.json({
+                //     message: "email not found"
+                // });
             } else {
                 user.comparePassword(password, (err, isMatch) => {
                     if(err || isMatch === false) {
-                        return res.json({
-                            message: "password incorrect"
-                        });
+                        errors.password = "password incorrect";
+                        return res.status(404).json(errors);
+                        // return res.json({
+                        //     message: "password incorrect"
+                        // });
                     } else {
                         // token return
                         const payload = {
@@ -101,7 +115,7 @@ router.post("/login", (req, res) => {
             }
         })
         .catch(err => {
-            res.json({
+            res.status(500).json({
                 error: err.message
             });
         });
