@@ -7,6 +7,8 @@ const userModel = require("../model/user");
 
 const checkAuth = passport.authenticate('jwt', { session: false});
 
+const validateRegisterInput = require('../validation/register');
+
 function tokenGenerator(payload) {
     return jwt.sign(
         payload,
@@ -20,16 +22,24 @@ function tokenGenerator(payload) {
 // @desc    Register User
 // @access  Public
 router.post("/register", (req, res) => {
-
+    const {errors, isValid} = validateRegisterInput(req.body);
     const { name, email, password } = req.body;
 
+    // checkValidation
+    if (!isValid) {
+        return res.json(errors);
+    }
     userModel
         .findOne({ email })
         .then(user => {
             if(user) {
-                return res.json({
-                   message : "email already used"
-                });
+                errors.email = "email already used";
+                return res.json(errors);
+
+
+                // return res.json({
+                //    message : "email already used"
+                // });
             } else {
                 const newUser = new userModel({
                     name,

@@ -93,6 +93,7 @@ router.get("/:profileId", (req, res) => {
 
     profileModel
         .findById(id)
+        .populate("user", ["name", "avatar"])
         .then(profile => {
             if(profile){
                return res.json({
@@ -107,8 +108,12 @@ router.get("/:profileId", (req, res) => {
 
         })
         .catch(err => res.json(err));
-
 });
+
+// userId로 검색
+
+
+// skills로 검색 / 지역, 상태, 학력, 커리어로 검
 
 
 
