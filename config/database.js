@@ -2,7 +2,10 @@ const mongoose = require("mongoose");
 
 const dbOptions = {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useCreateIndex: true,
+    useFindAndModify: true
+
 }
 
 
@@ -12,3 +15,4 @@ mongoose
     .then(() => console.log("MongoDB connected!"))
     .catch(err => console.log(err.message));
 
+mongoose.Promise = global.Promise;
