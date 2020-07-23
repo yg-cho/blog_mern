@@ -7,11 +7,19 @@ const checkAuth = passport.authenticate('jwt', { session: false });
 
 const profileModel = require("../model/profile");
 
+const validateProfileInput = require('../validation/profile');
+
 // @route   POST http://localhost:5000/profile/
 // @desc    Register profile
 // @access  Private
 
 router.post('/', checkAuth, (req, res) => {
+
+    const {errors, isValid} = validateProfileInput(req.body);
+
+    if (!isValid) {
+        return res.json(errors);
+    }
 
     const profileFields = {};
     profileFields.user = req.user.id;
@@ -39,8 +47,8 @@ router.post('/', checkAuth, (req, res) => {
                         { $set: profileFields },
                         { new: true }
                     )
-                    .then(profile => res.json(profile))
-                    .catch(err => res.json(err));
+                    .then(profile => res.status(200).json(profile))
+                    .catch(err => res.status(404).json(err));
 
                 // return res.json({
                 //     message : "already profileInfo, please update your profile"
@@ -48,12 +56,12 @@ router.post('/', checkAuth, (req, res) => {
             } else {
                 new profileModel(profileFields)
                     .save()
-                    .then(profile => res.json(profile))
-                    .catch(err => res.json(err));
+                    .then(profile => res.status(200).json(profile))
+                    .catch(err => res.status(404).json(err));
             }
         })
         .catch(err => {
-            res.json({
+            res.status(500).json({
                 error: err.message
             });
         });
