@@ -32,9 +32,19 @@ router.post('/', checkAuth, (req, res) => {
         .findOne({ user: req.user.id })
         .then(user => {
             if(user) {
-                return res.json({
-                    message : "already profileInfo, please update your profile"
-                });
+
+                profileModel
+                    .findOneAndUpdate(
+                        { user: req.user.id },
+                        { $set: profileFields },
+                        { new: true }
+                    )
+                    .then(profile => res.json(profile))
+                    .catch(err => res.json(err));
+
+                // return res.json({
+                //     message : "already profileInfo, please update your profile"
+                // });
             }
             new profileModel(profileFields)
                 .save()
