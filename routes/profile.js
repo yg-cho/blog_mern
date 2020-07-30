@@ -32,11 +32,11 @@ router.get('/total', checkAuth, (req, res) => {
         .populate('user', ['name', 'avatar'])
         .then(docs => {
             if(docs.length === 0){
-                return res.json({
+                return res.status(200).json({
                     message: 'There are no profile'
                 });
             }
-            res.json({
+            res.status(200).json({
                 count: docs.length,
                 users: docs
             });

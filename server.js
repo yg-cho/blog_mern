@@ -9,7 +9,7 @@ const app = express();
 
 const profileRoute = require("./routes/profile");
 const usersRouter = require("./routes/users");
-
+const postRouter = require("./routes/post");
 
 
 
@@ -27,7 +27,7 @@ require('./config/passport')(passport);
 
 app.use("/profile", profileRoute);
 app.use("/users", usersRouter);
-
+app.use("/post", postRouter);
 
 const PORT = process.env.PORT || 7000;
 app.listen(PORT, console.log(`server started at ${PORT}`));

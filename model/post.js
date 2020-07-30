@@ -24,7 +24,7 @@ const postSchema = new mongoose.Schema(
         likes: [
             {
                 user: {
-                    type: mongoose.SChema.Types.ObjectId,
+                    type: mongoose.Schema.Types.ObjectId,
                     ref: 'user'
                 }
             }
