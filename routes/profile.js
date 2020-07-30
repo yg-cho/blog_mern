@@ -208,8 +208,27 @@ router.delete("/edu/:edu_id", checkAuth, (req, res) => {
        .catch(err => res.status(500).json(err))
 });
 
+// @route   DELETE http://localhost:5000/profile
+// @desc    Delete profile
+// @access  Private
 
+router.delete('/', checkAuth, (req, res) => {
+    profileModel
+        .findOneAndRemove({user: req.user.id})
+        .then(profile => {
+            if(!profile){
+                return res.status(404).json({
+                    message: "There is no profile"
+                });
+            } else {
+                res.status(200).json({
+                    message: "Successful deleted profile"
+                });
+            }
 
+        })
+        .catch(err => res.status(500).json(err));
+});
 
 
 module.exports = router;
