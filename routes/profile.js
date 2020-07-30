@@ -3,7 +3,7 @@ const router = express.Router();
 
 
 const passport = require("passport");
-const checkAuth = passport.authenticate('jwt', { session: false });
+const checkAuth = passport.authenticate5('jwt', { session: false });
 
 const profileModel = require("../model/profile");
 
@@ -74,9 +74,76 @@ router.get("/:profileId", (req, res) => {
 // userId로 검색
 
 
-// skills로 검색 / 지역, 상태, 학력, 커리어로 검
+// skills로 검색 / 지역, 상태, 학력, 커리어
 
 
+// @route   POST  http://localhost:5000/profile/edu
+// @desc    Add education to profile
+// @access  Private
+router.post("/edu", checkAuth, (req, res) =>{
+   profileModel
+       .findOne({user: req.user.id})
+       .then(profile => {
+           if(!profile) {
+               return res.status(400).json({
+                   message: "There is no profile. Please register profile"
+               });
+           } else {
+               const newEdu = {
+                   school: req.body.school,
+                   degree: req.body.degree,
+                   fieldofstudy: req.body.fieldofstudy,
+                   from: req.body.from,
+                   to: req.body.to,
+                   current: req.body.current,
+                   description: req.body.description
+               }
+               profile.education.unshift(newEdu);
+               profile
+                   .save()
+                   .then(edu => {
+                       res.status(200).json(edu)
+                   })
+                   .catch(err => res.status(404).json(err));
+           }
+       })
+       .catch(err => res.status(500).json(err));
+});
+
+
+// @route   POST  http://localhost:5000/profile/ex
+// @desc    Add experience to profile
+// @access  Private
+router.post("/ex", checkAuth, (req, res)=> {
+   profileModel
+       .findOne({user: req.user.id})
+       .then(profile => {
+           if(!profile) {
+               return res.status(400).json({
+                   message: "There is no profile. Please register profile"
+               });
+           } else {
+               console.log(profile);
+               const newEx = {
+                   title: req.body.title,
+                   company: req.body.company,
+                   location: req.body.location,
+                   from: req.body.from,
+                   to: req.body.to,
+                   current: req.body.current,
+                   description: req.body.description
+               }
+               profile.experience.unshift(newEx);
+               profile
+                   .save()
+                   .then(ex => {
+                       res.status(200).json(ex);
+                   })
+                   .catch(err => res.status(404).json(err))
+           }
+       })
+       .catch(err => res.status(500).json(err))
+});
 
 
 
