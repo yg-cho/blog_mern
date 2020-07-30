@@ -3,11 +3,11 @@ const router = express.Router();
 
 
 const passport = require("passport");
-const checkAuth = passport.authenticate5('jwt', { session: false });
+const checkAuth = passport.authenticate('jwt', { session: false });
 
 const profileModel = require("../model/profile");
-
-
+const validateEducationInput = require("../validation/education");
+const validateExperienceInput = require("../validation/experience");
 const {
     register_profile
 
@@ -81,13 +81,16 @@ router.get("/:profileId", (req, res) => {
 // @desc    Add education to profile
 // @access  Private
 router.post("/edu", checkAuth, (req, res) =>{
-   profileModel
+   const {errors, isValid} = validateEducationInput(req.body)
+   if(!isValid) {
+       return res.status(400).json(errors);
+   }
+    profileModel
        .findOne({user: req.user.id})
        .then(profile => {
            if(!profile) {
-               return res.status(400).json({
-                   message: "There is no profile. Please register profile"
-               });
+               errors.message = "There is no profile. Please register profile"
+               return res.status(400).json(errors);
            } else {
                const newEdu = {
                    school: req.body.school,
@@ -115,13 +118,16 @@ router.post("/edu", checkAuth, (req, res) =>{
 // @desc    Add experience to profile
 // @access  Private
 router.post("/ex", checkAuth, (req, res)=> {
+    const { errors, isValid } = validateExperienceInput(req.body);
+    if(!isValid) {
+        return res.status(400).json(errors);
+    }
    profileModel
        .findOne({user: req.user.id})
        .then(profile => {
            if(!profile) {
-               return res.status(400).json({
-                   message: "There is no profile. Please register profile"
-               });
+               errors.message = "There is no profile. Please register profile"
+               return res.status(400).json(errors);
            } else {
                console.log(profile);
                const newEx = {
