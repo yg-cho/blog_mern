@@ -151,6 +151,65 @@ router.post("/ex", checkAuth, (req, res)=> {
        .catch(err => res.status(500).json(err))
 });
 
+// @route DELETE http://localhost:5000/profile/ex/:exp_id
+// // @desc    Delete experience from profile
+// // @access  Private
+router.delete("/ex/:exp_id", checkAuth, (req, res) => {
+   profileModel
+       .findOne({user: req.user.id})
+       .then(profile => {
+           if(!profile){
+               return res.status(500).json({
+                   message: "There is no profile"
+               });
+           } else {
+               console.log(profile.experience);
+               const removeIndex = profile.experience
+                   .map(item => item._id)
+                   .indexOf(req.params.exp_id);
+
+               profile.experience.splice(removeIndex, 1);
+
+               profile
+                   .save()
+                   .then(profile => res.status(200).json(profile))
+                   .catch(err => res.status(404).json(err));
+           }
+       })
+       .catch(err => res.status(500).json(err));
+});
+
+
+
+// @route DELETE http://localhost:5000/profile/edu/:edu_id
+// // @desc    Delete education from profile
+// // @access  Private
+
+router.delete("/edu/:edu_id", checkAuth, (req, res) => {
+   profileModel
+       .findOne({user : req.user.id})
+       .then(profile => {
+           if(!profile) {
+               return res.status(404).json({
+                   message: "There is no profile"
+               });
+           } else {
+               const removeIndex = profile.education
+                   .map(item => item._id)
+                   .indexOf(req.params.edu_id);
+
+               profile.education.splice(removeIndex, 1);
+               profile
+                   .save()
+                   .then(profile => res.status(200).json(profile))
+                   .catch(err => res.status(404).json(err));
+           }
+       })
+       .catch(err => res.status(500).json(err))
+});
+
+
+
 
 
 module.exports = router;
