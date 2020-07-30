@@ -14,5 +14,4 @@ mongoose
     .connect(process.env.MONGODB_URI, dbOptions)
     .then(() => console.log("MongoDB connected!"))
     .catch(err => console.log(err.message));
-
 mongoose.Promise = global.Promise;
