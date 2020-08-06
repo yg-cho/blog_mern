@@ -91,7 +91,9 @@ router.delete("/:post_id", checkAuth, (req, res) => {
 });
 
 
+// detail get post
 
+// update post
 
 
 

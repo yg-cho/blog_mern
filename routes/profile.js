@@ -9,7 +9,10 @@ const profileModel = require("../model/profile");
 const validateEducationInput = require("../validation/education");
 const validateExperienceInput = require("../validation/experience");
 const {
-    register_profile
+    register_profile,
+    total_profile,
+    get_one_profile,
+    get_userId_profile
 
 } = require('../controller/profile');
 
@@ -26,52 +29,17 @@ router.post('/', checkAuth, register_profile);
 // @desc    get total profile
 // @access  Private
 
-router.get('/total', checkAuth, (req, res) => {
-    profileModel
-        .find()
-        .populate('user', ['name', 'avatar'])
-        .then(docs => {
-            if(docs.length === 0){
-                return res.status(200).json({
-                    message: 'There are no profile'
-                });
-            }
-            res.status(200).json({
-                count: docs.length,
-                users: docs
-            });
-        })
-        .catch(err => res.json(err));
-});
+router.get('/total', checkAuth, total_profile);
 
 
 // @route   GET http://localhost:5000/profile/:profileId
 // @desc    get detail profile
 // @access  Private
 
-router.get("/:profileId", (req, res) => {
-    const id = req.params.profileId;
-
-    profileModel
-        .findById(id)
-        .populate("user", ["name", "avatar"])
-        .then(profile => {
-            if(profile){
-               return res.json({
-                    message: "detail get profile",
-                    profileInfo: profile
-                });
-            } else {
-                res.json({
-                    message: "no profile"
-                });
-            }
-
-        })
-        .catch(err => res.json(err));
-});
+router.get("/:profileId", get_one_profile);
 
 // userId로 검색
+router.get("/:userId", checkAuth, get_userId_profile);
 
 
 // skills로 검색 / 지역, 상태, 학력, 커리어

@@ -54,3 +54,56 @@ exports.register_profile = (req, res) => {
             });
         });
 };
+
+exports.total_profile = (req, res) => {
+    profileModel
+        .find()
+        .populate('user', ['name', 'avatar'])
+        .then(docs => {
+            if(docs.length === 0){
+                return res.status(200).json({
+                    message: 'There are no profile'
+                });
+            }
+            res.status(200).json({
+                count: docs.length,
+                users: docs
+            });
+        })
+        .catch(err => res.json(err));
+};
+
+exports.get_one_profile =  (req, res) => {
+    const id = req.params.profileId;
+
+    profileModel
+        .findById(id)
+        .populate("user", ["name", "avatar"])
+        .then(profile => {
+            if(profile){
+                return res.json({
+                    message: "detail get profile",
+                    profileInfo: profile
+                });
+            } else {
+                res.json({
+                    message: "no profile"
+                });
+            }
+
+        })
+        .catch(err => res.json(err));
+};
+
+exports.get_userId_profile = (req, res) => {
+    const user = req.params.userId;
+    profileModel
+        .findOne(user)
+        .then(() => {
+            res.status(200).json({
+                message: "find userId",
+                userInfo: user
+            })
+        })
+        .catch(err => res.status(500).json(err));
+}
