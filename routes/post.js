@@ -183,7 +183,31 @@ router.post("/reply/:post_id", checkAuth, (req, res) => {
 
 });
 
+// @route   DELETE http://localhost:5000/post/reply/:post_id/:reply_id
+// @desc    delete reply from post
+// @access  Private
+router.delete("/reply/:post_id/:reply_id", checkAuth, (req, res) => {
+    postModel
+        .findById(req.params.post_id)
+        .then(post => {
+            console.log(post.reply);
+            if(post.reply.filter(item => item._id.toString() === req.params.reply_id).length === 0) {
+                return res.status(400).json({
+                    message: "reply does not exist"
+                });
+            } else {
+                const removeIndex = post.reply
+                    .map(item => item._id.toString())
+                    .indexOf(req.params.reply_id);
 
+                post.reply.splice(removeIndex, 1);
+                post.save().then(post => res.status(200).json(post));
+            }
 
+        })
+        .catch(err => res.status(500).json({
+            message: "postId is not found"
+        }));
+});
 
 module.exports = router;
