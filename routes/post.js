@@ -84,7 +84,7 @@ router.delete("/:post_id", checkAuth, (req, res) => {
                             }));
                     }
                 })
-                .catch(err => res.status(404).json({ postnotfound: "No post found"}));
+                .catch(err => res.status(404).json({ postnotfound: "No found post"}));
 
        })
        .catch(err => res.status(500).json(err))
@@ -95,6 +95,60 @@ router.delete("/:post_id", checkAuth, (req, res) => {
 
 // update post
 
+// @route   POST http://localhost:5000/post/like/:post_id
+// @desc    Like post
+// @access  Private
+
+// test login -> get token -> find post(post id) -> like
+
+router.post("/like/:post_id", checkAuth, (req, res) => {
+   postModel
+       .findById(req.params.post_id)
+       .then(post => {
+           console.log("post_id :"+req.params.post_id);
+           if (post.likes.filter(like => like.user.toString() === req.user.id).length > 0) {
+               return res.status(400).json({
+                   message: "User already likes this post"
+               });
+           } else {
+               post.likes.unshift({ user: req.user.id });
+               post.save()
+                   .then(post => res.status(200).json(post))
+           }
+       })
+       .catch(err=> res.status(400).json({
+           message: "Post_Id not found"
+       }))
+});
+
+
+// @route   POST http://localhost:5000/post/unlike/:post_id
+// @desc    unLike post
+// @access  Private
+
+router.post("/unlike/:post_id", checkAuth, (req, res) => {
+   postModel
+       .findById(req.params.post_id)
+       .then(post => {
+           if (post.likes.filter(like => like.user.toString() === req.user.id).length === 0) {
+               return res.status(400).json({
+                   message: "You have not liked this post"
+               })
+           } else {
+                const removeIndex = post.likes
+                    .map(item => item.user.toString())
+                    .indexOf(req.user.id);
+
+                post.likes.splice(removeIndex,1);
+                post.save()
+                    .then(post => res.status(200).json(post));
+
+           }
+       })
+       .catch(err => res.status(400).json({
+           message: "Post_Id not found"
+       }))
+});
 
 
 module.exports = router;
