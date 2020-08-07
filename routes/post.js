@@ -150,5 +150,40 @@ router.post("/unlike/:post_id", checkAuth, (req, res) => {
        }))
 });
 
+// @route   POST http://localhost:5000/post/reply/:post_id
+// @desc    Add reply to post
+// @access  Private
+
+router.post("/reply/:post_id", checkAuth, (req, res) => {
+   const { errors, isValid } = validatePostInput(req.body);
+   if(!isValid) {
+       return res.status(400).json(errors);
+   }
+
+   postModel
+       .findById(req.params.post_id)
+       .then(post => {
+           const newReply = {
+               text : req.body.text,
+               name : req.body.name,
+               avatar : req.user.avatar,
+               user : req.user.id
+           };
+
+           post.reply.unshift(newReply);
+           post
+               .save()
+               .then(post => {
+                   res.status(200).json(post);
+               })
+       })
+       .catch(err => res.status(404).json({
+           message: "postId is not found"
+       }));
+
+});
+
+
+
 
 module.exports = router;
