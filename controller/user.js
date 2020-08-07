@@ -7,11 +7,11 @@ const validateLoginInput = require("../validation/login");
 sgMail.setApiKey(process.env.MAIL_KEY)
 
 
-function tokenGenerator(payload) {
+function tokenGenerator(payload, key, time) {
     return jwt.sign(
         payload,
-        process.env.SECRET_KEY,
-        {expiresIn: 36000 }
+        key,
+        {expiresIn: time }
     );
 }
 
@@ -36,12 +36,13 @@ exports.register_user = (req, res) => {
                 //    message : "email already used"
                 // });
             } else {
-                const token = jwt.sign(
-                    { name, email, password },
-                    process.env.JWT_ACCOUNT_ACTIIVATION,
-                    { expiresIn : '10m'}
-                )
-                console.log(token);
+                // const token = jwt.sign(
+                //     { name, email, password },
+                //     process.env.JWT_ACCOUNT_ACTIIVATION,
+                //     { expiresIn : '10m'}
+                // )
+
+                const token = tokenGenerator({ name, email, password }, process.env.JWT_ACCOUNT_ACTIIVATION, "5m");
 
                 const emailData = {
                     from: process.env.EMAIL_FROM,
@@ -130,7 +131,7 @@ exports.login_user =  (req, res) => {
                         };
                         res.json({
                             success: isMatch,
-                            token: "Bearer " + tokenGenerator(payload)
+                            token: "Bearer " + tokenGenerator(payload, process.env.SECRET_KEY, "7d")
                         });
                     }
                 })
@@ -149,4 +150,34 @@ exports.current_user = (req, res) => {
         name: req.user.name,
         avatar: req.user.avatar
     });
+};
+
+exports.activation_user = (req, res) => {
+    const { token } = req.body;
+    if(token) {
+        jwt.verify(token, process.env.JWT_ACCOUNT_ACTIIVATION, (err, decoded) => {
+            if (err) {
+                console.log('Activation error');
+                return res.status(401).json({
+                    errors: "Expired Link. sign up again"
+                });
+            } else {
+                const { name, email, password } = jwt.decode(token);
+
+                const user = new userModel({
+                    name, email, password
+                });
+                user
+                    .save()
+                    .then(user => {
+                        return res.status(200).json({
+                            success : true,
+                            message: "Signup success",
+                            userInfo: user
+                        });
+                    })
+                    .catch(err => res.json(500).json(err));
+            }
+        })
+    }
 };
