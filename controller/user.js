@@ -42,7 +42,7 @@ exports.register_user = (req, res) => {
                 //     { expiresIn : '10m'}
                 // )
 
-                const token = tokenGenerator({ name, email, password }, process.env.JWT_ACCOUNT_ACTIIVATION, "5m");
+                const token = tokenGenerator({ name, email, password }, process.env.JWT_ACCOUNT_ACTIIVATION || "ygcho", "5m");
 
                 const emailData = {
                     from: process.env.EMAIL_FROM || "cyg4484@gmail.com",
