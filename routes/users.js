@@ -5,7 +5,7 @@ const checkAuth = passport.authenticate('jwt', { session: false});
 const userModel = require("../model/user");
 const jwt = require("jsonwebtoken");
 const sgMail = require("@sendgrid/mail");
-
+const _ = require("lodash");
 const {
     register_user,
     login_user,
@@ -53,19 +53,19 @@ router.put("/forgotpassword", (req, res) => {
        .then(user => {
            const token = jwt.sign(
                { _id: user._id},
-               process.env.JWT_RESET_PASSWORD,
+               process.env.JWT_RESET_PASSWORD || "ygcho",
                { expiresIn: '30m'}
            );
            const emailData = {
-               from: process.env.EMAIL_FROM,
+               from: process.env.EMAIL_FROM || "cyg4484@gmail.com",
                to: email,
                subject: `Password Reset Link`,
                html: `
                     <h1>Please use the following link to reset your password</h1>
-                    <p>${process.env.CLIENT_URL}/users/password/reset/${token}</p>
+                    <p>${process.env.CLIENT_URL || "http://localhost:3000"}/users/password/reset/${token}</p>
                     <hr/>
                     <p>This email may contain sensitive information</p>
-                    <p>${process.env.CLIENT_URL}</p>
+                    <p>${process.env.CLIENT_URL || "http://localhost:3000"}</p>
                `
            };
            console.log(user);
@@ -92,6 +92,59 @@ router.put("/forgotpassword", (req, res) => {
        .catch(err => res.status(500).json(err));
 });
 
+
+// @route   PUT http://localhost:5000/users/resetpassword
+// @desc    reset password
+// @access  Private
+router.put("/resetpassword", (req, res) => {
+   const { resetPasswordLink, newPassword } = req.body;
+   if (resetPasswordLink) {
+       jwt.verify(resetPasswordLink, process.env.JWT_RESET_PASSWORD || "ygcho", (err, decoded) => {
+           if(err) {
+               return res.status(400).json({
+                   error: 'Expired link. Try again'
+               });
+           } else {
+               userModel
+                   .findOne({resetPasswordLink})
+                   .then(user => {
+                       const updatedFields = {
+                           password: newPassword,
+                           resetPasswordLink: ''
+                       };
+
+                       user = _.extend(user, updatedFields);
+                       console.log(user);
+                       user
+                           .save((err, result) => {
+                               if (err) {
+                                   return res.status(400).json({
+                                       error: 'Error resetting user password'
+                                   });
+                               }
+                               res.status(200).json({
+                                   message: `Great! Now you can login with your new password`
+                               });
+                           });
+
+                       // user
+                       //     .save()
+                       //     .then(() => {
+                       //         res.status(200).json({
+                       //             message :'Great! Now you can login with your new password'
+                       //         });
+                       //     })
+                       //     .catch(err => res.status(400).json({
+                       //         error: 'Error resetting user password'
+                       //     }));
+                   })
+                   .catch(err => res.status(500).json({
+                       err : err.message
+                   }));
+           }
+       })
+   }
+});
 
 
 

@@ -1,6 +1,7 @@
 const express = require("express");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
+const path = require("path");
 const passport = require("passport");
 const dotEnv = require("dotenv");
 dotEnv.config();
@@ -29,5 +30,15 @@ app.use("/profile", profileRoute);
 app.use("/users", usersRouter);
 app.use("/post", postRouter);
 
-const PORT = process.env.PORT || 7000;
+
+// Server
+if (process.env.NODE_ENV || "production" === 'production') {
+    app.use(express.static('client/build'));
+
+    app.get('*', (req, res) => {
+        res.sendFile(path.join(__dirname, 'client', 'build', 'index.html')); // relative path
+    });
+}
+
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, console.log(`server started at ${PORT}`));

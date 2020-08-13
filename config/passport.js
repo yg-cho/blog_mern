@@ -9,7 +9,7 @@ const userModel = require("../model/user");
 //token , 시크릿 키 담을 공간
 const opts = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-opts.secretOrKey = process.env.SECRET_KEY;
+opts.secretOrKey = process.env.SECRET_KEY || "ygcho";
 
 module.exports = passport => {
     passport.use(

@@ -4,7 +4,7 @@ const userModel = require("../model/user");
 const validateRegisterInput = require("../validation/register");
 const validateLoginInput = require("../validation/login");
 
-sgMail.setApiKey(process.env.MAIL_KEY)
+sgMail.setApiKey(process.env.MAIL_KEY || "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")
 
 
 function tokenGenerator(payload, key, time) {
@@ -45,15 +45,15 @@ exports.register_user = (req, res) => {
                 const token = tokenGenerator({ name, email, password }, process.env.JWT_ACCOUNT_ACTIIVATION, "5m");
 
                 const emailData = {
-                    from: process.env.EMAIL_FROM,
+                    from: process.env.EMAIL_FROM || "cyg4484@gmail.com",
                     to: email,
                     subject: 'Account activation link',
                     html: `
                     <h1>Please use the following to activate your account</h1>
-                    <p>${process.env.CLIENT_URL}/users/activate/${token}</p>
+                    <p>${process.env.CLIENT_URL || "http://localhost:3000"}/users/activate/${token}</p>
                     <hr />
                     <p>This email may containe sensetive information</p>
-                    <p>${process.env.CLIENT_URL}</p>
+                    <p>${process.env.CLIENT_URL || "http://localhost:3000"}</p>
                     `
                 };
                 sgMail
