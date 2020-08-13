@@ -170,6 +170,7 @@ exports.activation_user = (req, res) => {
                 user
                     .save()
                     .then(user => {
+                        console.log(user);
                         return res.status(200).json({
                             success : true,
                             message: "Signup success",

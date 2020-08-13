@@ -4,16 +4,18 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const gravatar = require("gravatar");
 
-
-
 const userSchema = new mongoose.Schema(
     {
-        name: {
-            type: String,
-            required: true
-        },
         email: {
             type: String,
+            trim: true,
+            required: true,
+            unique: true,
+            lowercase: true
+        },
+        name: {
+            type: String,
+            trim: true,
             required: true
         },
         password: {
@@ -23,11 +25,48 @@ const userSchema = new mongoose.Schema(
         avatar: {
             type: String
         },
+        role: {
+            type: String,
+            default: 'subscriber'
+        },
+        resetPasswordLink: {
+            data: String,
+            default: ''
+        }
     },
     {
         timestamps: true
     }
 );
+
+
+
+// const userSchema = new mongoose.Schema(
+//     {
+//         name: {
+//             type: String,
+//             required: true
+//         },
+//         email: {
+//             type: String,
+//             required: true
+//         },
+//         password: {
+//             type: String,
+//             required: true
+//         },
+//         avatar: {
+//             type: String
+//         },
+//         resetPasswordLink: {
+//             data: String,
+//             default: ''
+//         }
+//     },
+//     {
+//         timestamps: true
+//     }
+// );
 //middleware
 userSchema.pre("save", async function (next) {
     try {
