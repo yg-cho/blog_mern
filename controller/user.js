@@ -69,6 +69,7 @@ exports.register_user = (req, res) => {
                             error: err
                         });
                     });
+                console.log(emailData);
                 // const newUser = new userModel({
                 //     name,
                 //     email,

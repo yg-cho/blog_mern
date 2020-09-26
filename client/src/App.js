@@ -1,10 +1,14 @@
 import React from 'react';
+import Landing from "./components/layout/Landing";
+import Navbar from "./components/layout/Navbar";
+
 import './App.css';
 
 function App() {
   return (
     <div className="App">
-      <h1>ygcho's home</h1>
+        <Navbar/>
+        <Landing/>
     </div>
   );
 }
