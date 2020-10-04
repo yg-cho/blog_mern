@@ -28,9 +28,6 @@ const Login = () => {
 
     return (
         <Fragment>
-            <div className={"container"}>
-                 <div className={"row"}>
-                     <div clasName={"col-md-8 m-auto"}>
                         <h1 className={"large text-primary"}>Login</h1>
                         <p className={"lead"}>
                            <i className={"fas fa-user"}/> Login your Account
@@ -63,9 +60,6 @@ const Login = () => {
                         <p className={"my-1"}>
                             Signup <Link to={"/signup"}>here</Link>
                         </p>
-                     </div>
-                 </div>
-            </div>
         </Fragment>
     );
 };

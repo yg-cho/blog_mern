@@ -1,8 +1,11 @@
 import React, {Fragment, useState} from 'react';
 import {Link} from 'react-router-dom';
 import axios from 'axios';
+import { connect } from 'react-redux';
+import { setAlert } from "../../actions/alert";
+import PropTypes from 'prop-types';
 
-const Signup = () => {
+const Signup = ({setAlert}) => {
 
     const [formData, setFormData] = useState({
         name: '',
@@ -19,7 +22,7 @@ const Signup = () => {
         e.preventDefault();
 
         if(password !== password2) {
-            alert('Password do not match');
+            setAlert('Password do not match', 'danger');
         }
         console.log(formData);
         // Server Connect
@@ -33,9 +36,6 @@ const Signup = () => {
 
     return (
         <Fragment>
-            <div className={"container"}>
-                <div clasName={"row"}>
-                    <div className={"col-md-8 m-auto"}>
                         <h1 className={"large text-primary"}>Sign Up</h1>
                         <p className={"lead"}>
                             <i className={"fas fa-user"}/> Create Your Account
@@ -87,11 +87,16 @@ const Signup = () => {
                         <p className={"my-1"}>
                             Already have an Account? <Link to={"/login"}>Login</Link>
                         </p>
-                    </div>
-                </div>
-            </div>
         </Fragment>
     );
 };
 
-export default Signup;
+Signup.propTypes= {
+    setAlert: PropTypes.func.isRequired
+};
+
+
+export default connect(
+    null,
+    { setAlert }
+)(Signup);
