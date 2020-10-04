@@ -3,9 +3,10 @@ import {Link} from 'react-router-dom';
 import axios from 'axios';
 import { connect } from 'react-redux';
 import { setAlert } from "../../actions/alert";
+import { register} from "../../actions/auth";
 import PropTypes from 'prop-types';
 
-const Signup = ({setAlert}) => {
+const Signup = ({setAlert, register}) => {
 
     const [formData, setFormData] = useState({
         name: '',
@@ -25,11 +26,13 @@ const Signup = ({setAlert}) => {
             setAlert('Password do not match', 'danger');
         }
         console.log(formData);
+        register({name, email, password, password2});
+
         // Server Connect
-        axios
-            .post('http://localhost:5000/users/register', formData)
-            .then(result => console.log(result))
-            .catch(err => console.log(err));
+        // axios
+        //     .post('http://localhost:5000/users/register', formData)
+        //     .then(result => console.log(result))
+        //     .catch(err => console.log(err));
     }
 
 
@@ -92,11 +95,12 @@ const Signup = ({setAlert}) => {
 };
 
 Signup.propTypes= {
-    setAlert: PropTypes.func.isRequired
+    setAlert: PropTypes.func.isRequired,
+    register: PropTypes.func.isRequired
 };
 
 
 export default connect(
     null,
-    { setAlert }
+    { setAlert, register }
 )(Signup);
