@@ -150,11 +150,15 @@ exports.login_user =  (req, res) => {
 };
 
 exports.current_user = (req, res) => {
-    res.json({
-        id: req.user.id,
-        name: req.user.name,
-        avatar: req.user.avatar
-    });
+    // res.json({
+    //     id: req.user.id,
+    //     name: req.user.name,
+    //     avatar: req.user.avatar
+    // });
+    userModel
+        .findById(req.user.id)
+        .then(user => res.json(user))
+        .catch(err => res.json(err))
 };
 
 exports.activation_user = (req, res) => {
