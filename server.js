@@ -2,6 +2,7 @@ const express = require("express");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const path = require("path");
+const cors = require("cors");
 const passport = require("passport");
 const dotEnv = require("dotenv");
 dotEnv.config();
@@ -19,6 +20,7 @@ require("./config/database");
 
 
 //middle ware
+app.use(cors());
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));

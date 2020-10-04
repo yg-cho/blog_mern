@@ -42,48 +42,52 @@ exports.register_user = (req, res) => {
                 //     { expiresIn : '10m'}
                 // )
 
-                const token = tokenGenerator({ name, email, password }, process.env.JWT_ACCOUNT_ACTIIVATION || "ygcho", "5m");
-
-                const emailData = {
-                    from: process.env.EMAIL_FROM || "cyg4484@gmail.com",
-                    to: email,
-                    subject: 'Account activation link',
-                    html: `
-                    <h1>Please use the following to activate your account</h1>
-                    <p>${process.env.CLIENT_URL || "http://localhost:3000"}/users/activate/${token}</p>
-                    <hr />
-                    <p>This email may containe sensetive information</p>
-                    <p>${process.env.CLIENT_URL || "http://localhost:3000"}</p>
-                    `
-                };
-                sgMail
-                    .send(emailData)
-                    .then(sent => {
-                        return res.status(200).json({
-                            message: `Email has been sent to ${email}`
-                        })
-                    })
-                    .catch(err => {
-                        return res.status(400).json({
-                            success: false,
-                            error: err
-                        });
-                    });
-                console.log(emailData);
-                // const newUser = new userModel({
-                //     name,
-                //     email,
-                //     password
-                // });
-                // newUser
-                //     .save()
-                //     .then(user => {
-                //         res.json({
-                //             msg: "Successful newUser",
-                //             userInfo : user,
-                //         });
+                // const token = tokenGenerator({ name, email, password }, process.env.JWT_ACCOUNT_ACTIIVATION || "ygcho", "5m");
+                //
+                // const emailData = {
+                //     from: process.env.EMAIL_FROM || "cyg4484@gmail.com",
+                //     to: email,
+                //     subject: 'Account activation link',
+                //     html: `
+                //     <h1>Please use the following to activate your account</h1>
+                //     <p>${process.env.CLIENT_URL || "http://localhost:3000"}/users/activate/${token}</p>
+                //     <hr />
+                //     <p>This email may containe sensetive information</p>
+                //     <p>${process.env.CLIENT_URL || "http://localhost:3000"}</p>
+                //     `
+                // };
+                // sgMail
+                //     .send(emailData)
+                //     .then(sent => {
+                //         return res.status(200).json({
+                //             message: `Email has been sent to ${email}`
+                //         })
                 //     })
-                //     .catch(err => res.json(err));
+                //     .catch(err => {
+                //         return res.status(400).json({
+                //             success: false,
+                //             error: err
+                //         });
+                //     });
+                // console.log(emailData);
+
+
+
+
+                const newUser = new userModel({
+                    name,
+                    email,
+                    password
+                });
+                newUser
+                    .save()
+                    .then(user => {
+                        res.json({
+                            msg: "Successful newUser",
+                            userInfo : user,
+                        });
+                    })
+                    .catch(err => res.json(err));
             }
 
         })
