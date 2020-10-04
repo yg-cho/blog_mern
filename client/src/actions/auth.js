@@ -56,5 +56,30 @@ export const register = ({name, email, password, password2}) => async dispatch =
 };
 
 export const login = ({email, password}) => async dispatch => {
+    const config ={
+        headers: {
+            'Content-Type' : 'application/json'
+        }
+    }
 
+    const body = JSON.stringify({email, password});
+
+    await axios
+        .post('http://localhost:5000/users/login', body, config)
+        .then(res => {
+            dispatch({
+                type:LOGIN_SUCCESS,
+                payload: res.data
+            });
+            console.log(res.data);
+        })
+        .catch(err => {
+            // const errors = err.response.data.errors;
+            // if(errors){
+            //     errors.forEach(error => dispatch(setAlert(error.msg,"danger")));
+            // }
+            dispatch({
+                type:LOGIN_FAIL
+            })
+        });
 };
