@@ -1,6 +1,5 @@
 import React, {Fragment, useState} from 'react';
 import {Link} from 'react-router-dom';
-
 import { connect } from 'react-redux';
 import { setAlert } from "../../actions/alert";
 import { login } from "../../actions/auth";
@@ -28,11 +27,6 @@ const Login = ({setAlert, login}) => {
         login({email, password});
 
     }
-
-    // axios
-    //     .post('http://localhost:5000/users/login',formData)
-    //     .then(result => console.log(result))
-    //     .catch(err => console.log(err));
 
     return (
         <Fragment>

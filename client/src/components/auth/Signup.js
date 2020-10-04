@@ -1,6 +1,5 @@
 import React, {Fragment, useState} from 'react';
 import {Link} from 'react-router-dom';
-import axios from 'axios';
 import { connect } from 'react-redux';
 import { setAlert } from "../../actions/alert";
 import { register} from "../../actions/auth";
@@ -27,12 +26,6 @@ const Signup = ({setAlert, register}) => {
         }
         console.log(formData);
         register({name, email, password, password2});
-
-        // Server Connect
-        // axios
-        //     .post('http://localhost:5000/users/register', formData)
-        //     .then(result => console.log(result))
-        //     .catch(err => console.log(err));
     }
 
 
