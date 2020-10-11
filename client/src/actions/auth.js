@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { setAlert} from "./alert";
-import { REGISTER_SUCCESS, REGISTER_FAIL, LOGIN_FAIL, LOGIN_SUCCESS, USER_LOADED } from "./types";
+import { REGISTER_SUCCESS, REGISTER_FAIL, LOGIN_FAIL, LOGIN_SUCCESS, USER_LOADED, LOGOUT } from "./types";
 import setAuthToken from "../utils/setAuthToken";
 
 
@@ -16,7 +16,7 @@ export const register = ({name, email, password, password2}) => async dispatch =
     await axios
         .post('/users/register', body, config)
         .then(res => {
-            console.log("12313 === ",res.data.password);
+            console.log("12313 === ",res.data);
             dispatch({
                 type: REGISTER_SUCCESS,
                 payload: res.data
@@ -104,4 +104,11 @@ export const loadUser = () => async dispatch => {
             type: LOGIN_FAIL
         });
     }
+};
+
+export const logout = () => dispatch => {
+    console.log("11");
+    dispatch({ type:LOGOUT });
+
+
 };
