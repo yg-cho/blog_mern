@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-
+const profileModel = require('../model/profile');
 
 const passport = require("passport");
 const checkAuth = passport.authenticate('jwt', { session: false });
@@ -30,8 +30,28 @@ router.post('/', checkAuth, register_profile);
 // @route   GET http://localhost:5000/profile/total
 // @desc    get total profile
 // @access  Private
-
 router.get('/total', checkAuth, total_profile);
+
+// @route   GET /profile/
+// @desc    Get current users profile
+// @access  Private
+router.get('/me', checkAuth, (req, res) => {
+        const errors = {};
+
+        profileModel
+            .findOne({ user: req.user.id })
+            .populate('user', ['name', 'avatar'])
+            .then(profile => {
+                if (!profile) {
+                    errors.noprofile = 'There is no profile for this user';
+                    return res.status(404).json(errors);
+                }
+                res.json(profile);
+            })
+            .catch(err => res.status(404).json(err));
+    }
+);
+
 
 
 // @route   GET http://localhost:5000/profile/:profileId
@@ -41,6 +61,30 @@ router.get("/:profileId", get_one_profile);
 
 // userId로 검색
 router.get("/:userId", checkAuth, get_userId_profile);
+
+// @route GET http://localhost:5000/profile/me
+// @desc  get my profile info
+// @access Private
+// router.get("/me", checkAuth, (req, res) => {
+//     // const id = req.user.id;
+//     console.log("11::: ", req.user);
+//     profileModel
+//         .findOne({user: req.user.id })
+//         .then(profile => {
+//          console.log(profile);
+//             if(!profile) {
+//                 return res.json({
+//                     profileInfo: profile
+//                 });
+//             } else {
+//                 res.json({
+//                     message: "no profile"
+//                 });
+//             }
+//         })
+//         .catch(err => res.json(err));
+//
+// });
 
 
 // skills로 검색 / 지역, 상태, 학력, 커리어

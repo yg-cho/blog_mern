@@ -5,6 +5,8 @@ import Login from "./auth/Login";
 import Signup from "./auth/Signup";
 import Navbar from "./layout/Navbar";
 import Landing from "./layout/Landing";
+import Dashboard from "./dashboard/Dashboard";
+import PrivateRoute from "./routing/PrivateRoute";
 export default () => {
     return (
 
@@ -17,6 +19,7 @@ export default () => {
                     <Switch>
                         <Route path="/login" exact component={Login} />
                         <Route path="/signup" exact component={Signup} />
+                        <PrivateRoute path="/dashboard" exact component={Dashboard}/>
                     </Switch>
                 </section>
             </Fragment>
