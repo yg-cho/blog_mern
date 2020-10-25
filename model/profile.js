@@ -35,7 +35,7 @@ const profileSchema = new mongoose.Schema(
             required: true
         },
         bio: {
-            type: Boolean
+            type: String
         },
         githubusername: {
             type: String

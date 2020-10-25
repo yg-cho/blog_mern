@@ -114,7 +114,7 @@ exports.login_user =  (req, res) => {
             if(!user) {
 
                 errors.email = "email not found";
-                return res.status(404).json(errors);
+                return res.status(405).json(errors);
 
                 // return res.json({
                 //     message: "email not found"

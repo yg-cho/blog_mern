@@ -38,7 +38,7 @@ exports.register_profile = (req, res) => {
                         { new: true }
                     )
                     .then(profile => res.status(200).json(profile))
-                    .catch(err => res.status(404).json(err));
+                    .catch(err => res.status(409).json(err.message));
 
                 // return res.json({
                 //     message : "already profileInfo, please update your profile"
@@ -47,7 +47,7 @@ exports.register_profile = (req, res) => {
                 new profileModel(profileFields)
                     .save()
                     .then(profile => res.status(200).json(profile))
-                    .catch(err => res.status(404).json(err));
+                    .catch(err => res.status(408).json(err.message));
             }
         })
         .catch(err => {

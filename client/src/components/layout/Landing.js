@@ -18,12 +18,12 @@ const Landing = ({isAuthenticated}) => {
                         share posts and get help from other developers
                     </p>
                     <div className='buttons'>
-                        <a href={'/'} className={'btn btn-primary'}>
+                        <Link to={'/signup'} className={'btn btn-primary'}>
                             Sign up
-                        </a>
-                        <a href={'/'} className={'btn btn-light'}>
+                        </Link>
+                        <Link to={'/login'} className={'btn btn-light'}>
                             Login
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </div>

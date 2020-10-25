@@ -1,9 +1,10 @@
 import React,{Fragment, useState} from 'react';
 import PropTypes from 'prop-types';
-import {Link} from "react-router-dom";
+import {Link, withRouter} from "react-router-dom";
+import { createProfile } from "../../actions/profile";
+import { connect } from 'react-redux';
 
-
-const CreateProfile = props => {
+const CreateProfile = ({ createProfile, history }) => {
     const [formData, setFormData] = useState({
         handle: '',
         company: '',
@@ -32,12 +33,19 @@ const CreateProfile = props => {
         console.log(status);
     };
 
+    const onSubmit = event => {
+        event.preventDefault();
+        createProfile(formData, history);
+
+        console.log(formData);
+    };
+
     return (
         <Fragment>
             <h1>Create your profile</h1>
             <p>Let's get some information to make your profile stand out</p>
             <small>* = required field</small>
-            <form className={"form"}>
+            <form className={"form"} onSubmit={onSubmit}>
                 <div className={"form-group"}>
                     <select
                         name={'status'}
@@ -56,6 +64,18 @@ const CreateProfile = props => {
                     </select>
                     <small className={'form-text'}>
                         Give us an idea of where you are at in your career
+                    </small>
+                </div>
+                <div className={'form-group'}>
+                    <input
+                        type={'text'}
+                        placeholder={'Handle'}
+                        name={'handle'}
+                        value={handle}
+                        onChange={e => onChange(e)}
+                    />
+                    <small className={'form-text'}>
+                        Could be your own Handle or one you work for
                     </small>
                 </div>
                 <div className={'form-group'}>
@@ -177,7 +197,10 @@ const CreateProfile = props => {
 };
 
 CreateProfile.propTypes = {
-
+    createProfile: PropTypes.func.isRequired
 };
 
-export default CreateProfile;
+export default connect(
+    null,
+    {createProfile}
+)(withRouter(CreateProfile))
