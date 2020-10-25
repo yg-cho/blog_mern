@@ -4,7 +4,7 @@ import { GET_PROFILE, PROFILE_ERROR } from "./types";
 
 export const getCurrentProfile = () => async dispatch => {
     try {
-        const res = await axios.get('http://localhost:5000/profile/me');
+        const res = await axios.get('/profile/me');
         console.log("res",res.data);
         dispatch({
             type: GET_PROFILE,

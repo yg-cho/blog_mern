@@ -167,7 +167,7 @@ const CreateProfile = ({ createProfile, history }) => {
                         <div className={'form-group social-input'}>
                             <i className={'fab fa-twitter fa-2x'}/>
                             <input
-                                text={'text'}
+                                type={'text'}
                                 placeholder={'Twitter URL'}
                                 name={'Twitter'}
                                 onChange={ e => onChange(e)}
