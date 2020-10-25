@@ -9,6 +9,8 @@ import Dashboard from "./dashboard/Dashboard";
 import PrivateRoute from "./routing/PrivateRoute";
 import CreateProfile from "./profile-forms/CreateProfile";
 import EditProfile from "./profile-forms/EditProfile";
+import AddEducation from "./profile-forms/AddEducation";
+import AddExperience from "./profile-forms/AddExperience";
 
 export default () => {
     return (
@@ -25,6 +27,8 @@ export default () => {
                         <PrivateRoute path="/dashboard" exact component={Dashboard}/>
                         <PrivateRoute path="/create-profile" exact component={CreateProfile}/>
                         <PrivateRoute path="/edit-profile" exact component={EditProfile}/>
+                        <PrivateRoute path="/add-experience" exact component={AddExperience}/>
+                        <PrivateRoute path="/add-education" exact component={AddEducation}/>
                     </Switch>
                 </section>
             </Fragment>
